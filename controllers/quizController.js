@@ -57,7 +57,7 @@ const submitQuiz = async (req, res) => {
     let score = 0;
     quiz.questions.forEach((question) => {
       const userAns = answers.find((a) => a.questionId.toString() === question._id.toString());
-      if (userAns && userAns.selectedOptionIndex === question.correctAnswerIndex) {
+      if (userAns && Number(userAns.selectedOptionIndex) === question.correctAnswerIndex) {
         score += 1;
       }
     });
@@ -90,7 +90,30 @@ const submitQuiz = async (req, res) => {
   }
 };
 
-// @desc    Seed sample quizzes for all courses (For Testing)
+// @desc    Create a single quiz (For custom admin creation)
+// @route   POST /api/quizzes
+// @access  Private
+const createQuiz = async (req, res) => {
+  try {
+    const { course, title, questions } = req.body;
+
+    const quiz = await Quiz.create({
+      course,
+      title,
+      questions
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Quiz created successfully',
+      data: quiz
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Seed sample quizzes for all courses
 // @route   POST /api/quizzes/seed
 // @access  Private
 const seedQuizzes = async (req, res) => {
@@ -133,5 +156,6 @@ const seedQuizzes = async (req, res) => {
 module.exports = {
   getQuizByCourse,
   submitQuiz,
+  createQuiz,
   seedQuizzes
 };
