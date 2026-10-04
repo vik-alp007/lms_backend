@@ -7,6 +7,8 @@ const LearningActivity = require('../models/LearningActivity.js');
 // @access  Private
 const getProgress = async (req, res) => {
   try {
+
+
     const { courseId } = req.params;
     const userId = req.user._id;
 
