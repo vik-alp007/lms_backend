@@ -1,14 +1,15 @@
 const { getMLRecommendations } = require('../services/mlService.js');
 
-// @desc    Get course recommendations from ML API
+// @desc    Get course recommendations from ML API (Proxy)
 // @route   POST /recommend
 // @access  Private
 const getRecommendations = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { current_course } = req.body; // Optional current course title from request body
+    const { current_course } = req.body; // Optional current course title
 
-    const recommendationsData = await getMLRecommendations(userId, current_course);
+    // Pass req.body as 3rd argument (customMetrics) so custom frontend payloads are respected
+    const recommendationsData = await getMLRecommendations(userId, current_course, req.body);
 
     res.status(200).json({
       success: true,
